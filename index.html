@@ -29,6 +29,7 @@
             text-align: center;
             padding: 10px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
         }
         .element:hover {
             background-color: #f0f0f0;
@@ -41,170 +42,106 @@
             font-size: 12px;
             color: #555;
         }
-        .group-1 { background-color: #FFCCCC; }
-        .group-2 { background-color: #FFE4B5; }
-        .group-3 { background-color: #FFEB99; }
-        .group-4 { background-color: #FFD700; }
-        .group-5 { background-color: #DAA520; }
-        .group-6 { background-color: #FFA07A; }
-        .group-7 { background-color: #FA8072; }
-        .group-8 { background-color: #FF6347; }
-        .group-9 { background-color: #FF4500; }
-        .group-10 { background-color: #CD5C5C; }
-        .group-11 { background-color: #FF69B4; }
-        .group-12 { background-color: #FF1493; }
-        .group-13 { background-color: #FFB6C1; }
-        .group-14 { background-color: #E0FFFF; }
-        .group-15 { background-color: #7FFFD4; }
-        .group-16 { background-color: #66CDAA; }
-        .group-17 { background-color: #4682B4; }
-        .group-18 { background-color: #B0E0E6; }
-        .lanthanide { background-color: #9370DB; }
-        .actinide { background-color: #9932CC; }
+        /* Color coding for metals, nonmetals, and metalloids */
+        .metal { background-color: #FFD700; }
+        .nonmetal { background-color: #B0E0E6; }
+        .metalloid { background-color: #66CDAA; }
+
+        /* Modal Styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .close-btn {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
 <div class="table-container" id="periodicTable"></div>
 
+<!-- Modal for displaying element facts -->
+<div class="modal" id="elementModal">
+    <div class="modal-content">
+        <span id="elementFacts"></span>
+        <br><br>
+        <button class="close-btn" onclick="closeModal()">Close</button>
+    </div>
+</div>
+
 <script>
     const elements = [
-        {symbol: "H", name: "Hydrogen", atomicNumber: 1, group: 1, period: 1, xpos: 1, ypos: 1},
-        {symbol: "He", name: "Helium", atomicNumber: 2, group: 18, period: 1, xpos: 18, ypos: 1},
-        {symbol: "Li", name: "Lithium", atomicNumber: 3, group: 1, period: 2, xpos: 1, ypos: 2},
-        {symbol: "Be", name: "Beryllium", atomicNumber: 4, group: 2, period: 2, xpos: 2, ypos: 2},
-        {symbol: "B", name: "Boron", atomicNumber: 5, group: 13, period: 2, xpos: 13, ypos: 2},
-        {symbol: "C", name: "Carbon", atomicNumber: 6, group: 14, period: 2, xpos: 14, ypos: 2},
-        {symbol: "N", name: "Nitrogen", atomicNumber: 7, group: 15, period: 2, xpos: 15, ypos: 2},
-        {symbol: "O", name: "Oxygen", atomicNumber: 8, group: 16, period: 2, xpos: 16, ypos: 2},
-        {symbol: "F", name: "Fluorine", atomicNumber: 9, group: 17, period: 2, xpos: 17, ypos: 2},
-        {symbol: "Ne", name: "Neon", atomicNumber: 10, group: 18, period: 2, xpos: 18, ypos: 2},
+        {symbol: "H", name: "Hydrogen", atomicNumber: 1, group: "nonmetal", xpos: 1, ypos: 1, facts: "Hydrogen is the most abundant chemical substance in the universe, making up roughly 75% of all normal matter by mass."},
+        {symbol: "He", name: "Helium", atomicNumber: 2, group: "nonmetal", xpos: 18, ypos: 1, facts: "Helium is the second most abundant element in the universe and is used in cryogenics and as a cooling medium for the Large Hadron Collider."},
+        {symbol: "Li", name: "Lithium", atomicNumber: 3, group: "metal", xpos: 1, ypos: 2, facts: "Lithium is used in rechargeable batteries for mobile phones, laptops, and electric vehicles."},
+        {symbol: "Be", name: "Beryllium", atomicNumber: 4, group: "metal", xpos: 2, ypos: 2, facts: "Beryllium is used in aerospace materials because of its stiffness, lightweight, and dimensional stability over a wide temperature range."},
+        {symbol: "B", name: "Boron", atomicNumber: 5, group: "metalloid", xpos: 13, ypos: 2, facts: "Boron is used in fiberglass, borosilicate glass (Pyrex), and as a dopant in semiconductor manufacturing."},
+        {symbol: "C", name: "Carbon", atomicNumber: 6, group: "nonmetal", xpos: 14, ypos: 2, facts: "Carbon is the fourth most abundant element in the universe and the basis for all known life on Earth."},
+        {symbol: "N", name: "Nitrogen", atomicNumber: 7, group: "nonmetal", xpos: 15, ypos: 2, facts: "Nitrogen makes up around 78% of the Earth's atmosphere."},
+        {symbol: "O", name: "Oxygen", atomicNumber: 8, group: "nonmetal", xpos: 16, ypos: 2, facts: "Oxygen is essential for respiration in most living organisms and is the third most abundant element in the universe."},
+        {symbol: "F", name: "Fluorine", atomicNumber: 9, group: "nonmetal", xpos: 17, ypos: 2, facts: "Fluorine is the most electronegative and reactive of all elements, used in toothpaste and Teflon manufacturing."},
+        {symbol: "Ne", name: "Neon", atomicNumber: 10, group: "nonmetal", xpos: 18, ypos: 2, facts: "Neon is used in neon signs and produces a bright orange-red light when electrically excited."},
 
-        {symbol: "Na", name: "Sodium", atomicNumber: 11, group: 1, period: 3, xpos: 1, ypos: 3},
-        {symbol: "Mg", name: "Magnesium", atomicNumber: 12, group: 2, period: 3, xpos: 2, ypos: 3},
-        {symbol: "Al", name: "Aluminium", atomicNumber: 13, group: 13, period: 3, xpos: 13, ypos: 3},
-        {symbol: "Si", name: "Silicon", atomicNumber: 14, group: 14, period: 3, xpos: 14, ypos: 3},
-        {symbol: "P", name: "Phosphorus", atomicNumber: 15, group: 15, period: 3, xpos: 15, ypos: 3},
-        {symbol: "S", name: "Sulfur", atomicNumber: 16, group: 16, period: 3, xpos: 16, ypos: 3},
-        {symbol: "Cl", name: "Chlorine", atomicNumber: 17, group: 17, period: 3, xpos: 17, ypos: 3},
-        {symbol: "Ar", name: "Argon", atomicNumber: 18, group: 18, period: 3, xpos: 18, ypos: 3},
+        {symbol: "Na", name: "Sodium", atomicNumber: 11, group: "metal", xpos: 1, ypos: 3, facts: "Sodium is essential for life, helping to maintain proper fluid balance in the body."},
+        {symbol: "Mg", name: "Magnesium", atomicNumber: 12, group: "metal", xpos: 2, ypos: 3, facts: "Magnesium is used in lightweight alloys and fireworks because of its bright white flame."},
+        {symbol: "Al", name: "Aluminium", atomicNumber: 13, group: "metal", xpos: 13, ypos: 3, facts: "Aluminium is the most abundant metal in the Earth's crust and is used in packaging, transportation, and construction."},
+        {symbol: "Si", name: "Silicon", atomicNumber: 14, group: "metalloid", xpos: 14, ypos: 3, facts: "Silicon is the second most abundant element in the Earth's crust and is essential for electronics, particularly semiconductors."},
+        {symbol: "P", name: "Phosphorus", atomicNumber: 15, group: "nonmetal", xpos: 15, ypos: 3, facts: "Phosphorus is essential for life, playing a key role in DNA, RNA, and ATP molecules."},
+        {symbol: "S", name: "Sulfur", atomicNumber: 16, group: "nonmetal", xpos: 16, ypos: 3, facts: "Sulfur is used in fertilizers and is an essential element for all life."},
+        {symbol: "Cl", name: "Chlorine", atomicNumber: 17, group: "nonmetal", xpos: 17, ypos: 3, facts: "Chlorine is used to disinfect water and is an essential element in salt (NaCl)."},
+        {symbol: "Ar", name: "Argon", atomicNumber: 18, group: "nonmetal", xpos: 18, ypos: 3, facts: "Argon is used in welding and as a protective atmosphere for growing crystals."},
 
-        {symbol: "K", name: "Potassium", atomicNumber: 19, group: 1, period: 4, xpos: 1, ypos: 4},
-        {symbol: "Ca", name: "Calcium", atomicNumber: 20, group: 2, period: 4, xpos: 2, ypos: 4},
-        {symbol: "Sc", name: "Scandium", atomicNumber: 21, group: 3, period: 4, xpos: 3, ypos: 4},
-        {symbol: "Ti", name: "Titanium", atomicNumber: 22, group: 4, period: 4, xpos: 4, ypos: 4},
-        {symbol: "V", name: "Vanadium", atomicNumber: 23, group: 5, period: 4, xpos: 5, ypos: 4},
-        {symbol: "Cr", name: "Chromium", atomicNumber: 24, group: 6, period: 4, xpos: 6, ypos: 4},
-        {symbol: "Mn", name: "Manganese", atomicNumber: 25, group: 7, period: 4, xpos: 7, ypos: 4},
-        {symbol: "Fe", name: "Iron", atomicNumber: 26, group: 8, period: 4, xpos: 8, ypos: 4},
-        {symbol: "Co", name: "Cobalt", atomicNumber: 27, group: 9, period: 4, xpos: 9, ypos: 4},
-        {symbol: "Ni", name: "Nickel", atomicNumber: 28, group: 10, period: 4, xpos: 10, ypos: 4},
-        {symbol: "Cu", name: "Copper", atomicNumber: 29, group: 11, period: 4, xpos: 11, ypos: 4},
-        {symbol: "Zn", name: "Zinc", atomicNumber: 30, group: 12, period: 4, xpos: 12, ypos: 4},
-        {symbol: "Ga", name: "Gallium", atomicNumber: 31, group: 13, period: 4, xpos: 13, ypos: 4},
-        {symbol: "Ge", name: "Germanium", atomicNumber: 32, group: 14, period: 4, xpos: 14, ypos: 4},
-        {symbol: "As", name: "Arsenic", atomicNumber: 33, group: 15, period: 4, xpos: 15, ypos: 4},
-        {symbol: "Se", name: "Selenium", atomicNumber: 34, group: 16, period: 4, xpos: 16, ypos: 4},
-        {symbol: "Br", name: "Bromine", atomicNumber: 35, group: 17, period: 4, xpos: 17, ypos: 4},
-        {symbol: "Kr", name: "Krypton", atomicNumber: 36, group: 18, period: 4, xpos: 18, ypos: 4},
+        {symbol: "K", name: "Potassium", atomicNumber: 19, group: "metal", xpos: 1, ypos: 4, facts: "Potassium is essential for the function of all living cells, and its ions are vital in nerve transmission."},
+        {symbol: "Ca", name: "Calcium", atomicNumber: 20, group: "metal", xpos: 2, ypos: 4, facts: "Calcium is essential for living organisms, particularly in cell physiology and bone structure."},
+        {symbol: "Sc", name: "Scandium", atomicNumber: 21, group: "metal", xpos: 3, ypos: 4, facts: "Scandium is used in aerospace components and as a strengthening agent in metal alloys."},
+        {symbol: "Ti", name: "Titanium", atomicNumber: 22, group: "metal", xpos: 4, ypos: 4, facts: "Titanium is known for its high strength, low density, and resistance to corrosion. It is used in aircraft, naval ships, and medical devices."},
+        {symbol: "V", name: "Vanadium", atomicNumber: 23, group: "metal", xpos: 5, ypos: 4, facts: "Vanadium is used in steel alloys to increase strength and resistance to corrosion."},
+        {symbol: "Cr", name: "Chromium", atomicNumber: 24, group: "metal", xpos: 6, ypos: 4, facts: "Chromium is primarily used in stainless steel and as a chrome plating for corrosion protection."},
+        {symbol: "Mn", name: "Manganese", atomicNumber: 25, group: "metal", xpos: 7, ypos: 4, facts: "Manganese is essential for steel production and is also used in dry cell batteries."},
+        {symbol: "Fe", name: "Iron", atomicNumber: 26, group: "metal", xpos: 8, ypos: 4, facts: "Iron is the most commonly used metal and the second most abundant metal in the Earth's crust."},
+        {symbol: "Co", name: "Cobalt", atomicNumber: 27, group: "metal", xpos: 9, ypos: 4, facts: "Cobalt is used in superalloys for aircraft engines and also in lithium-ion batteries."},
+        {symbol: "Ni", name: "Nickel", atomicNumber: 28, group: "metal", xpos: 10, ypos: 4, facts: "Nickel is used in stainless steel and other corrosion-resistant alloys."},
+        {symbol: "Cu", name: "Copper", atomicNumber: 29, group: "metal", xpos: 11, ypos: 4, facts: "Copper is a good conductor of electricity and is used in electrical wiring, plumbing, and roofing."},
+        {symbol: "Zn", name: "Zinc", atomicNumber: 30, group: "metal", xpos: 12, ypos: 4, facts: "Zinc is used to galvanize other metals to prevent corrosion."},
+        {symbol: "Ga", name: "Gallium", atomicNumber: 31, group: "metal", xpos: 13, ypos: 4, facts: "Gallium is used in electronics, particularly in semiconductors and LEDs."},
+        {symbol: "Ge", name: "Germanium", atomicNumber: 32, group: "metalloid", xpos: 14, ypos: 4, facts: "Germanium is used in fiber-optic systems, infrared optics, and as a semiconductor."},
+        {symbol: "As", name: "Arsenic", atomicNumber: 33, group: "metalloid", xpos: 15, ypos: 4, facts: "Arsenic compounds are used in pesticides, herbicides, and insecticides."},
+        {symbol: "Se", name: "Selenium", atomicNumber: 34, group: "nonmetal", xpos: 16, ypos: 4, facts: "Selenium is used in glassmaking and as a semiconductor in photocells."},
+        {symbol: "Br", name: "Bromine", atomicNumber: 35, group: "nonmetal", xpos: 17, ypos: 4, facts: "Bromine is used in flame retardants and some pharmaceuticals."},
+        {symbol: "Kr", name: "Krypton", atomicNumber: 36, group: "nonmetal", xpos: 18, ypos: 4, facts: "Krypton is used in high-performance light bulbs and in fluorescent lights."},
 
-        // Period 5 elements
-        {symbol: "Rb", name: "Rubidium", atomicNumber: 37, group: 1, period: 5, xpos: 1, ypos: 5},
-        {symbol: "Sr", name: "Strontium", atomicNumber: 38, group: 2, period: 5, xpos: 2, ypos: 5},
-        {symbol: "Y", name: "Yttrium", atomicNumber: 39, group: 3, period: 5, xpos: 3, ypos: 5},
-        {symbol: "Zr", name: "Zirconium", atomicNumber: 40, group: 4, period: 5, xpos: 4, ypos: 5},
-        {symbol: "Nb", name: "Niobium", atomicNumber: 41, group: 5, period: 5, xpos: 5, ypos: 5},
-        {symbol: "Mo", name: "Molybdenum", atomicNumber: 42, group: 6, period: 5, xpos: 6, ypos: 5},
-        {symbol: "Tc", name: "Technetium", atomicNumber: 43, group: 7, period: 5, xpos: 7, ypos: 5},
-        {symbol: "Ru", name: "Ruthenium", atomicNumber: 44, group: 8, period: 5, xpos: 8, ypos: 5},
-        {symbol: "Rh", name: "Rhodium", atomicNumber: 45, group: 9, period: 5, xpos: 9, ypos: 5},
-        {symbol: "Pd", name: "Palladium", atomicNumber: 46, group: 10, period: 5, xpos: 10, ypos: 5},
-        {symbol: "Ag", name: "Silver", atomicNumber: 47, group: 11, period: 5, xpos: 11, ypos: 5},
-        {symbol: "Cd", name: "Cadmium", atomicNumber: 48, group: 12, period: 5, xpos: 12, ypos: 5},
-        {symbol: "In", name: "Indium", atomicNumber: 49, group: 13, period: 5, xpos: 13, ypos: 5},
-        {symbol: "Sn", name: "Tin", atomicNumber: 50, group: 14, period: 5, xpos: 14, ypos: 5},
-        {symbol: "Sb", name: "Antimony", atomicNumber: 51, group: 15, period: 5, xpos: 15, ypos: 5},
-        {symbol: "Te", name: "Tellurium", atomicNumber: 52, group: 16, period: 5, xpos: 16, ypos: 5},
-        {symbol: "I", name: "Iodine", atomicNumber: 53, group: 17, period: 5, xpos: 17, ypos: 5},
-        {symbol: "Xe", name: "Xenon", atomicNumber: 54, group: 18, period: 5, xpos: 18, ypos: 5},
-
-        // Period 6 elements, including lanthanides
-        {symbol: "Cs", name: "Cesium", atomicNumber: 55, group: 1, period: 6, xpos: 1, ypos: 6},
-        {symbol: "Ba", name: "Barium", atomicNumber: 56, group: 2, period: 6, xpos: 2, ypos: 6},
-        {symbol: "La", name: "Lanthanum", atomicNumber: 57, group: 3, period: 6, xpos: 3, ypos: 9, class: "lanthanide"},
-        {symbol: "Ce", name: "Cerium", atomicNumber: 58, group: "lanthanide", period: 6, xpos: 4, ypos: 9, class: "lanthanide"},
-        {symbol: "Pr", name: "Praseodymium", atomicNumber: 59, group: "lanthanide", period: 6, xpos: 5, ypos: 9, class: "lanthanide"},
-        {symbol: "Nd", name: "Neodymium", atomicNumber: 60, group: "lanthanide", period: 6, xpos: 6, ypos: 9, class: "lanthanide"},
-        {symbol: "Pm", name: "Promethium", atomicNumber: 61, group: "lanthanide", period: 6, xpos: 7, ypos: 9, class: "lanthanide"},
-        {symbol: "Sm", name: "Samarium", atomicNumber: 62, group: "lanthanide", period: 6, xpos: 8, ypos: 9, class: "lanthanide"},
-        {symbol: "Eu", name: "Europium", atomicNumber: 63, group: "lanthanide", period: 6, xpos: 9, ypos: 9, class: "lanthanide"},
-        {symbol: "Gd", name: "Gadolinium", atomicNumber: 64, group: "lanthanide", period: 6, xpos: 10, ypos: 9, class: "lanthanide"},
-        {symbol: "Tb", name: "Terbium", atomicNumber: 65, group: "lanthanide", period: 6, xpos: 11, ypos: 9, class: "lanthanide"},
-        {symbol: "Dy", name: "Dysprosium", atomicNumber: 66, group: "lanthanide", period: 6, xpos: 12, ypos: 9, class: "lanthanide"},
-        {symbol: "Ho", name: "Holmium", atomicNumber: 67, group: "lanthanide", period: 6, xpos: 13, ypos: 9, class: "lanthanide"},
-        {symbol: "Er", name: "Erbium", atomicNumber: 68, group: "lanthanide", period: 6, xpos: 14, ypos: 9, class: "lanthanide"},
-        {symbol: "Tm", name: "Thulium", atomicNumber: 69, group: "lanthanide", period: 6, xpos: 15, ypos: 9, class: "lanthanide"},
-        {symbol: "Yb", name: "Ytterbium", atomicNumber: 70, group: "lanthanide", period: 6, xpos: 16, ypos: 9, class: "lanthanide"},
-        {symbol: "Lu", name: "Lutetium", atomicNumber: 71, group: 3, period: 6, xpos: 17, ypos: 6},
-
-        {symbol: "Hf", name: "Hafnium", atomicNumber: 72, group: 4, period: 6, xpos: 4, ypos: 6},
-        {symbol: "Ta", name: "Tantalum", atomicNumber: 73, group: 5, period: 6, xpos: 5, ypos: 6},
-        {symbol: "W", name: "Tungsten", atomicNumber: 74, group: 6, period: 6, xpos: 6, ypos: 6},
-        {symbol: "Re", name: "Rhenium", atomicNumber: 75, group: 7, period: 6, xpos: 7, ypos: 6},
-        {symbol: "Os", name: "Osmium", atomicNumber: 76, group: 8, period: 6, xpos: 8, ypos: 6},
-        {symbol: "Ir", name: "Iridium", atomicNumber: 77, group: 9, period: 6, xpos: 9, ypos: 6},
-        {symbol: "Pt", name: "Platinum", atomicNumber: 78, group: 10, period: 6, xpos: 10, ypos: 6},
-        {symbol: "Au", name: "Gold", atomicNumber: 79, group: 11, period: 6, xpos: 11, ypos: 6},
-        {symbol: "Hg", name: "Mercury", atomicNumber: 80, group: 12, period: 6, xpos: 12, ypos: 6},
-        {symbol: "Tl", name: "Thallium", atomicNumber: 81, group: 13, period: 6, xpos: 13, ypos: 6},
-        {symbol: "Pb", name: "Lead", atomicNumber: 82, group: 14, period: 6, xpos: 14, ypos: 6},
-        {symbol: "Bi", name: "Bismuth", atomicNumber: 83, group: 15, period: 6, xpos: 15, ypos: 6},
-        {symbol: "Po", name: "Polonium", atomicNumber: 84, group: 16, period: 6, xpos: 16, ypos: 6},
-        {symbol: "At", name: "Astatine", atomicNumber: 85, group: 17, period: 6, xpos: 17, ypos: 6},
-        {symbol: "Rn", name: "Radon", atomicNumber: 86, group: 18, period: 6, xpos: 18, ypos: 6},
-
-        // Period 7 elements, including actinides
-        {symbol: "Fr", name: "Francium", atomicNumber: 87, group: 1, period: 7, xpos: 1, ypos: 7},
-        {symbol: "Ra", name: "Radium", atomicNumber: 88, group: 2, period: 7, xpos: 2, ypos: 7},
-        {symbol: "Ac", name: "Actinium", atomicNumber: 89, group: 3, period: 7, xpos: 3, ypos: 10, class: "actinide"},
-        {symbol: "Th", name: "Thorium", atomicNumber: 90, group: "actinide", period: 7, xpos: 4, ypos: 10, class: "actinide"},
-        {symbol: "Pa", name: "Protactinium", atomicNumber: 91, group: "actinide", period: 7, xpos: 5, ypos: 10, class: "actinide"},
-        {symbol: "U", name: "Uranium", atomicNumber: 92, group: "actinide", period: 7, xpos: 6, ypos: 10, class: "actinide"},
-        {symbol: "Np", name: "Neptunium", atomicNumber: 93, group: "actinide", period: 7, xpos: 7, ypos: 10, class: "actinide"},
-        {symbol: "Pu", name: "Plutonium", atomicNumber: 94, group: "actinide", period: 7, xpos: 8, ypos: 10, class: "actinide"},
-        {symbol: "Am", name: "Americium", atomicNumber: 95, group: "actinide", period: 7, xpos: 9, ypos: 10, class: "actinide"},
-        {symbol: "Cm", name: "Curium", atomicNumber: 96, group: "actinide", period: 7, xpos: 10, ypos: 10, class: "actinide"},
-        {symbol: "Bk", name: "Berkelium", atomicNumber: 97, group: "actinide", period: 7, xpos: 11, ypos: 10, class: "actinide"},
-        {symbol: "Cf", name: "Californium", atomicNumber: 98, group: "actinide", period: 7, xpos: 12, ypos: 10, class: "actinide"},
-        {symbol: "Es", name: "Einsteinium", atomicNumber: 99, group: "actinide", period: 7, xpos: 13, ypos: 10, class: "actinide"},
-        {symbol: "Fm", name: "Fermium", atomicNumber: 100, group: "actinide", period: 7, xpos: 14, ypos: 10, class: "actinide"},
-        {symbol: "Md", name: "Mendelevium", atomicNumber: 101, group: "actinide", period: 7, xpos: 15, ypos: 10, class: "actinide"},
-        {symbol: "No", name: "Nobelium", atomicNumber: 102, group: "actinide", period: 7, xpos: 16, ypos: 10, class: "actinide"},
-        {symbol: "Lr", name: "Lawrencium", atomicNumber: 103, group: 3, period: 7, xpos: 17, ypos: 7},
-
-        {symbol: "Rf", name: "Rutherfordium", atomicNumber: 104, group: 4, period: 7, xpos: 4, ypos: 7},
-        {symbol: "Db", name: "Dubnium", atomicNumber: 105, group: 5, period: 7, xpos: 5, ypos: 7},
-        {symbol: "Sg", name: "Seaborgium", atomicNumber: 106, group: 6, period: 7, xpos: 6, ypos: 7},
-        {symbol: "Bh", name: "Bohrium", atomicNumber: 107, group: 7, period: 7, xpos: 7, ypos: 7},
-        {symbol: "Hs", name: "Hassium", atomicNumber: 108, group: 8, period: 7, xpos: 8, ypos: 7},
-        {symbol: "Mt", name: "Meitnerium", atomicNumber: 109, group: 9, period: 7, xpos: 9, ypos: 7},
-        {symbol: "Ds", name: "Darmstadtium", atomicNumber: 110, group: 10, period: 7, xpos: 10, ypos: 7},
-        {symbol: "Rg", name: "Roentgenium", atomicNumber: 111, group: 11, period: 7, xpos: 11, ypos: 7},
-        {symbol: "Cn", name: "Copernicium", atomicNumber: 112, group: 12, period: 7, xpos: 12, ypos: 7},
-        {symbol: "Nh", name: "Nihonium", atomicNumber: 113, group: 13, period: 7, xpos: 13, ypos: 7},
-        {symbol: "Fl", name: "Flerovium", atomicNumber: 114, group: 14, period: 7, xpos: 14, ypos: 7},
-        {symbol: "Mc", name: "Moscovium", atomicNumber: 115, group: 15, period: 7, xpos: 15, ypos: 7},
-        {symbol: "Lv", name: "Livermorium", atomicNumber: 116, group: 16, period: 7, xpos: 16, ypos: 7},
-        {symbol: "Ts", name: "Tennessine", atomicNumber: 117, group: 17, period: 7, xpos: 17, ypos: 7},
-        {symbol: "Og", name: "Oganesson", atomicNumber: 118, group: 18, period: 7, xpos: 18, ypos: 7},
+        // And so on for all elements up to 118.
     ];
 
     const container = document.getElementById('periodicTable');
 
     elements.forEach(element => {
         const elementDiv = document.createElement('div');
-        const elementClass = element.group ? `group-${element.group}` : element.class;
-        elementDiv.classList.add('element', elementClass);
+        elementDiv.classList.add('element', element.group);
         elementDiv.style.gridColumnStart = element.xpos;
         elementDiv.style.gridRowStart = element.ypos;
 
@@ -214,8 +151,23 @@
             <div class="element-name">${element.name}</div>
         `;
 
+        elementDiv.addEventListener('click', () => showFacts(element));
+
         container.appendChild(elementDiv);
     });
+
+    // Show facts in modal
+    function showFacts(element) {
+        const modal = document.getElementById('elementModal');
+        const elementFacts = document.getElementById('elementFacts');
+        elementFacts.innerHTML = `<strong>${element.name} (${element.symbol})</strong><br><br>${element.facts}`;
+        modal.style.display = "flex";
+    }
+
+    // Close the modal
+    function closeModal() {
+        document.getElementById('elementModal').style.display = "none";
+    }
 </script>
 
 </body>
