@@ -12,6 +12,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            margin: 0;
         }
         .table-container {
             width: 90%;
@@ -42,12 +43,24 @@
         }
         .group-1 { background-color: #FFCCCC; }
         .group-2 { background-color: #FFE4B5; }
-        .group-13 { background-color: #FFFACD; }
+        .group-3 { background-color: #FFEB99; }
+        .group-4 { background-color: #FFD700; }
+        .group-5 { background-color: #DAA520; }
+        .group-6 { background-color: #FFA07A; }
+        .group-7 { background-color: #FA8072; }
+        .group-8 { background-color: #FF6347; }
+        .group-9 { background-color: #FF4500; }
+        .group-10 { background-color: #CD5C5C; }
+        .group-11 { background-color: #FF69B4; }
+        .group-12 { background-color: #FF1493; }
+        .group-13 { background-color: #FFB6C1; }
         .group-14 { background-color: #E0FFFF; }
-        .group-15 { background-color: #FFD700; }
-        .group-16 { background-color: #90EE90; }
-        .group-17 { background-color: #B0E0E6; }
-        .group-18 { background-color: #DDA0DD; }
+        .group-15 { background-color: #7FFFD4; }
+        .group-16 { background-color: #66CDAA; }
+        .group-17 { background-color: #4682B4; }
+        .group-18 { background-color: #B0E0E6; }
+        .lanthanide { background-color: #9370DB; }
+        .actinide { background-color: #9932CC; }
     </style>
 </head>
 <body>
@@ -66,7 +79,36 @@
         {symbol: "O", name: "Oxygen", atomicNumber: 8, group: 16, period: 2, xpos: 16, ypos: 2},
         {symbol: "F", name: "Fluorine", atomicNumber: 9, group: 17, period: 2, xpos: 17, ypos: 2},
         {symbol: "Ne", name: "Neon", atomicNumber: 10, group: 18, period: 2, xpos: 18, ypos: 2},
-        // You can add more elements here for the entire periodic table
+
+        {symbol: "Na", name: "Sodium", atomicNumber: 11, group: 1, period: 3, xpos: 1, ypos: 3},
+        {symbol: "Mg", name: "Magnesium", atomicNumber: 12, group: 2, period: 3, xpos: 2, ypos: 3},
+        {symbol: "Al", name: "Aluminium", atomicNumber: 13, group: 13, period: 3, xpos: 13, ypos: 3},
+        {symbol: "Si", name: "Silicon", atomicNumber: 14, group: 14, period: 3, xpos: 14, ypos: 3},
+        {symbol: "P", name: "Phosphorus", atomicNumber: 15, group: 15, period: 3, xpos: 15, ypos: 3},
+        {symbol: "S", name: "Sulfur", atomicNumber: 16, group: 16, period: 3, xpos: 16, ypos: 3},
+        {symbol: "Cl", name: "Chlorine", atomicNumber: 17, group: 17, period: 3, xpos: 17, ypos: 3},
+        {symbol: "Ar", name: "Argon", atomicNumber: 18, group: 18, period: 3, xpos: 18, ypos: 3},
+
+        {symbol: "K", name: "Potassium", atomicNumber: 19, group: 1, period: 4, xpos: 1, ypos: 4},
+        {symbol: "Ca", name: "Calcium", atomicNumber: 20, group: 2, period: 4, xpos: 2, ypos: 4},
+        {symbol: "Sc", name: "Scandium", atomicNumber: 21, group: 3, period: 4, xpos: 3, ypos: 4},
+        {symbol: "Ti", name: "Titanium", atomicNumber: 22, group: 4, period: 4, xpos: 4, ypos: 4},
+        {symbol: "V", name: "Vanadium", atomicNumber: 23, group: 5, period: 4, xpos: 5, ypos: 4},
+        {symbol: "Cr", name: "Chromium", atomicNumber: 24, group: 6, period: 4, xpos: 6, ypos: 4},
+        {symbol: "Mn", name: "Manganese", atomicNumber: 25, group: 7, period: 4, xpos: 7, ypos: 4},
+        {symbol: "Fe", name: "Iron", atomicNumber: 26, group: 8, period: 4, xpos: 8, ypos: 4},
+        {symbol: "Co", name: "Cobalt", atomicNumber: 27, group: 9, period: 4, xpos: 9, ypos: 4},
+        {symbol: "Ni", name: "Nickel", atomicNumber: 28, group: 10, period: 4, xpos: 10, ypos: 4},
+        {symbol: "Cu", name: "Copper", atomicNumber: 29, group: 11, period: 4, xpos: 11, ypos: 4},
+        {symbol: "Zn", name: "Zinc", atomicNumber: 30, group: 12, period: 4, xpos: 12, ypos: 4},
+        {symbol: "Ga", name: "Gallium", atomicNumber: 31, group: 13, period: 4, xpos: 13, ypos: 4},
+        {symbol: "Ge", name: "Germanium", atomicNumber: 32, group: 14, period: 4, xpos: 14, ypos: 4},
+        {symbol: "As", name: "Arsenic", atomicNumber: 33, group: 15, period: 4, xpos: 15, ypos: 4},
+        {symbol: "Se", name: "Selenium", atomicNumber: 34, group: 16, period: 4, xpos: 16, ypos: 4},
+        {symbol: "Br", name: "Bromine", atomicNumber: 35, group: 17, period: 4, xpos: 17, ypos: 4},
+        {symbol: "Kr", name: "Krypton", atomicNumber: 36, group: 18, period: 4, xpos: 18, ypos: 4},
+
+        // And so on for all the elements up to 118.
     ];
 
     const container = document.getElementById('periodicTable');
